@@ -1,7 +1,7 @@
 ﻿# Ctrl8
 
 # Installation
->npm install async8 --save
+>npm install ctrl8 --save
 
 ## Usage
 >Mainly used for creating custom component.
