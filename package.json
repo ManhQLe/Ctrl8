@@ -1,0 +1,11 @@
+{
+  "name": "ctrl8",
+  "version": "0.0.0",
+  "description": "Ctrl8",
+  "main": "src/nodejs/index.js",
+  "author": {
+    "name": "Manh Le",
+    "email": "quang.manh@gmail.com",
+    "url": "http://8thdensity.com"
+  }
+}
