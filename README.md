@@ -82,8 +82,8 @@
 	})
 
 	console.log(Comp1.Name);
-	console.log("Toy Length: " , Comp1.Specification.Length);
-	console.log("Volume: ", Comp1.Specification.Volume);
+	console.log("Toy Length: " , Comp1.Specs.Length);
+	console.log("Volume: ", Comp1.Specs.Volume);
 
 	var Android1 = new Robot({
 		"Name":"Made Of Steel",

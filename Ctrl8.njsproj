@@ -31,8 +31,24 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="release\browser\Ctrl8.js" />
+    <Compile Include="release\browser\Ctrl8.min.js" />
+    <Compile Include="release\nodejs\index.js" />
+    <Compile Include="src\browser\Ctrl8.js" />
+    <Compile Include="src\nodejs\index.js" />
+    <Content Include="makerelease.bat" />
     <Content Include="package.json" />
     <Content Include="README.md" />
+    <Content Include="release\package.json" />
+    <Content Include="release\README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="release\" />
+    <Folder Include="release\browser\" />
+    <Folder Include="release\nodejs\" />
+    <Folder Include="src\" />
+    <Folder Include="src\browser\" />
+    <Folder Include="src\nodejs\" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
