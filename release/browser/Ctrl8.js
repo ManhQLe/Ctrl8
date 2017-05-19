@@ -26,6 +26,15 @@ Ctrl8.prototype.DrillProp = function (name, Storage, CtrlType) {
     Ctrl8.CreateProp(this, this.__Ctrls, name, new CtrlType(Storage), true);
 }
 
+Ctrl8.prototype.CpxProp = function (name, CtrlType, ReadOnly) {
+
+    Ctrl8.CalcProp(this, this.___Props, name, function (name, Storage) {
+        return new CtrlType(Storage[name] || (Storage[name] = {}));
+    }, ReadOnly ? null : function (nval, name, Storage) {
+        Storage[name] = nval;
+    })
+}
+
 Ctrl8.prototype.CalcProp = function (name, getfx, setfx, conf) {
     Ctrl8.CalcProp(this, this.__Props, name, getfx, setfx, conf);
 }
@@ -93,7 +102,7 @@ EventCtrl.prototype.Emit = function () {
     var A = this.__Events[event];
     A ? A.forEach(function (fx) {
         fx.apply(this, Args);
-    }) : 1;
+    }, this) : 1;
 }
 
 EventCtrl.prototype.On = function (event, fx) {

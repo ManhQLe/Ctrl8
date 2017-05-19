@@ -9,9 +9,9 @@
 ### Inheritance
 ```javascript
       function Toy(init) {
-			CustomComponent1.baseConstructor.call(this,init);
+			Toy.baseConstructor.call(this,init);
 	  }
-	  Ctrl8.ExtendsTo(CustomComponent1)
+	  Ctrl8.ExtendsTo(Toy)
 ```
 
 ### Define custom properties
@@ -107,3 +107,5 @@
 	console.log("New Brain Speed: ",Android1.Specs.CPU.Speed);
 
 ```
+
+
