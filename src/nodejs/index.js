@@ -1,6 +1,8 @@
 ﻿function Ctrl8(init) {
-    this.__Props = init ? init : {};
-    this.__Ctrls = {}
+    this._ = {};
+
+    this._.Props = init ? init : {};
+    this._.Ctrls = {}
 }
 
 Ctrl8.OfClass = Ctrl8;
@@ -18,17 +20,17 @@ Ctrl8.ExtendsTo = function (SubClass) {
 }
 
 Ctrl8.prototype.Prop = function (name, def, readonly, changefx, compfx, conf) {
-    Ctrl8.CreateProp(this, this.__Props, name, def, readonly, compfx, changefx, conf);
+    Ctrl8.CreateProp(this, this._.Props, name, def, readonly, compfx, changefx, conf);
 };
 
 Ctrl8.prototype.DrillProp = function (name, Storage, CtrlType) {
     CtrlType ? 1 : CtrlType = Ctrl8;
-    Ctrl8.CreateProp(this, this.__Ctrls, name, new CtrlType(Storage), true);
+    Ctrl8.CreateProp(this, this._.Ctrls, name, new CtrlType(Storage), true);
 }
 
 Ctrl8.prototype.CpxProp = function (name, CtrlType, ReadOnly) {
 
-    Ctrl8.CalcProp(this, this.___Props, name, function (name, Storage) {
+    Ctrl8.CalcProp(this, this.__.Props, name, function (name, Storage) {
         return new CtrlType(Storage[name] || (Storage[name] = {}));
     }, ReadOnly ? null : function (nval, name, Storage) {   
             Storage[name] = nval;         
@@ -36,7 +38,7 @@ Ctrl8.prototype.CpxProp = function (name, CtrlType, ReadOnly) {
 }
 
 Ctrl8.prototype.CalcProp = function (name, getfx, setfx, conf) {
-    Ctrl8.CalcProp(this, this.__Props, name, getfx, setfx, conf);
+    Ctrl8.CalcProp(this, this._.Props, name, getfx, setfx, conf);
 }
 
 Ctrl8.DefCompareFx = function (val1, val2) {
@@ -55,8 +57,8 @@ Ctrl8.CreateProp = function (O, Storage, name, def, readonly, CompareFx, ChangeF
         configurable: conf ? true : false
     }
     !readonly ? Pair.set = function (val) {
-        var yn = CompareFx(Storage[name], val);
-        yn ? 0 : (Storage[name] = val, ChangeFx(val));
+        var yn = CompareFx.call(this,Storage[name], val);
+        yn ? 0 : (Storage[name] = val, ChangeFx.call(this, val));
     } : 1;
     Object.defineProperty(O, name, Pair);
     !Storage.hasOwnProperty(name) && def !== undefined ? Storage[name] = def : 1;
@@ -65,20 +67,20 @@ Ctrl8.CreateProp = function (O, Storage, name, def, readonly, CompareFx, ChangeF
 Ctrl8.CalcProp = function (O, Storage, name, gfx, sfx, conf) {
     var Pair = {
         get: function () {
-            return gfx.call(O, name, Storage);
+            return gfx.call(this, name, Storage);
         },
         configurable: conf ? true : false
     }
     sfx ? Pair.set = function (nval) {
-        sfx.call(O, nval, name, Storage);
+        sfx.call(this, nval, name, Storage);
     } : 1;
     Object.defineProperty(O, name, Pair);
 }
 
 function DrillCtrl(init) {
     DrillCtrl.baseConstructor.call(this, init);
-    for (var n in this.__Props) {
-        var o = this.__Props[n];
+    for (var n in this._.Props) {
+        var o = this._.Props[n];
         if (typeof o == 'object')
             this.DrillProp(n, DrillCtrl, o)
         else
@@ -90,7 +92,7 @@ Ctrl8.ExtendsTo(DrillCtrl);
 
 function EventCtrl(int) {
     EventCtrl.baseConstructor.call(this, int);
-    this.__Events = [];
+    this._.Events = [];
 }
 
 Ctrl8.ExtendsTo(EventCtrl);
@@ -99,19 +101,19 @@ EventCtrl.prototype.Emit = function () {
     var Args = [].concat.call(arguments);
     var event = Args[0];
     Args.splice(0, 1);
-    var A = this.__Events[event];
+    var A = this._.Events[event];
     A ? A.forEach(function (fx) {
         fx.apply(this, Args);
     }, this) : 1;
 }
 
 EventCtrl.prototype.On = function (event, fx) {
-    var A = this.__Events[event] || (this.__Events[event] = []);
+    var A = this._.Events[event] || (this._.Events[event] = []);
     A.indexOf(fx) < 0 ? A.push(fx) : 1;
 }
 
 EventCtrl.prototype.Off = function (event, fx) {
-    var A = this.__Events[event] || (this.__Events[event] = []);
+    var A = this._.Events[event] || (this._.Events[event] = []);
     var idx = A.indexOf(fx)
     idx >= 0 ? A.splice(idx, 1) : 1;
 }
