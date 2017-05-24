@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 
 @SET COMPILE="C:\Users\Manh Le\Desktop\Mini JavaScript\compiler.jar"
 @SET JAVA="C:\Program Files (x86)\Java\jre1.8.0_65\bin\java.exe"

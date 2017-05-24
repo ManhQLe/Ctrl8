@@ -5,22 +5,19 @@
     this._.Ctrls = {}
 }
 
-Ctrl8.OfClass = Ctrl8;
-
 Ctrl8.ExtendsTo = function (SubClass) {
     function inheritance() { }
-    var Root = this.OfClass;
+    var Root = this;
     inheritance.prototype = Root.prototype;
     SubClass.prototype = new inheritance();
     SubClass.prototype.constructor = SubClass;
     SubClass.baseConstructor = Root;
     SubClass.superClass = Root.prototype;
-    SubClass.OfClass = SubClass;
     SubClass.ExtendsTo = Root.ExtendsTo;
 }
 
-Ctrl8.prototype.Prop = function (name, def, readonly, changefx, compfx, conf) {
-    Ctrl8.CreateProp(this, this._.Props, name, def, readonly, compfx, changefx, conf);
+Ctrl8.prototype.Prop = function (name, def, readonly, changefx, compfx, conf,CustomStorage) {
+    Ctrl8.CreateProp(this, CustomStorage || this._.Props, name, def, readonly, compfx, changefx, conf);
 };
 
 Ctrl8.prototype.DrillProp = function (name, Storage, CtrlType) {
@@ -30,15 +27,15 @@ Ctrl8.prototype.DrillProp = function (name, Storage, CtrlType) {
 
 Ctrl8.prototype.CpxProp = function (name, CtrlType, ReadOnly) {
 
-    Ctrl8.CalcProp(this, this.__.Props, name, function (name, Storage) {
+    Ctrl8.CalcProp(this, this._.Props, name, function (name, Storage) {
         return new CtrlType(Storage[name] || (Storage[name] = {}));
     }, ReadOnly ? null : function (nval, name, Storage) {   
             Storage[name] = nval;         
     })
 }
 
-Ctrl8.prototype.CalcProp = function (name, getfx, setfx, conf) {
-    Ctrl8.CalcProp(this, this._.Props, name, getfx, setfx, conf);
+Ctrl8.prototype.CalcProp = function (name, getfx, setfx, conf, CustomStorage) {
+    Ctrl8.CalcProp(this, CustomStorage || this._.Props, name, getfx, setfx, conf);
 }
 
 Ctrl8.DefCompareFx = function (val1, val2) {
@@ -92,13 +89,13 @@ Ctrl8.ExtendsTo(DrillCtrl);
 
 function EventCtrl(int) {
     EventCtrl.baseConstructor.call(this, int);
-    this._.Events = [];
+    this._.Events = {};
 }
 
 Ctrl8.ExtendsTo(EventCtrl);
 
 EventCtrl.prototype.Emit = function () {
-    var Args = [].concat.call(arguments);
+    var Args = Array.prototype.slice.call(arguments);
     var event = Args[0];
     Args.splice(0, 1);
     var A = this._.Events[event];
@@ -116,4 +113,9 @@ EventCtrl.prototype.Off = function (event, fx) {
     var A = this._.Events[event] || (this._.Events[event] = []);
     var idx = A.indexOf(fx)
     idx >= 0 ? A.splice(idx, 1) : 1;
+}
+
+module.exports = {
+    "EventCtrl": EventCtrl,
+    "Ctrl8": Ctrl8
 }
