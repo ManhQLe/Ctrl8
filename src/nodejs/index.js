@@ -1,6 +1,5 @@
 ﻿function Ctrl8(init) {
     this._ = {};
-
     this._.Props = init ? init : {};
     this._.Ctrls = {}
 }
@@ -16,9 +15,13 @@ Ctrl8.ExtendsTo = function (SubClass) {
     SubClass.ExtendsTo = Root.ExtendsTo;
 }
 
-Ctrl8.prototype.Prop = function (name, def, readonly, changefx, compfx, conf,CustomStorage) {
-    Ctrl8.CreateProp(this, CustomStorage || this._.Props, name, def, readonly, compfx, changefx, conf);
+Ctrl8.prototype.Prop = function (name, def, readonly, changefx, compfx, conf, CustomStorage, enumerable) {
+    Ctrl8.CreateProp(this, CustomStorage || this._.Props, name, def, readonly, compfx, changefx, conf, enumerable);
 };
+
+Ctrl8.prototype.EProp = function (name, def, readonly, changefx, compfx, conf, CustomStorage) {
+    Ctrl8.CreateProp(this, CustomStorage || this._.Props, name, def, readonly, compfx, changefx, conf, 1);
+}
 
 Ctrl8.prototype.DrillProp = function (name, Storage, CtrlType) {
     CtrlType ? 1 : CtrlType = Ctrl8;
@@ -31,11 +34,28 @@ Ctrl8.prototype.CpxProp = function (name, CtrlType, ReadOnly) {
         return new CtrlType(Storage[name] || (Storage[name] = {}));
     }, ReadOnly ? null : function (nval, name, Storage) {   
             Storage[name] = nval;         
-    })
+    }, false)
 }
 
-Ctrl8.prototype.CalcProp = function (name, getfx, setfx, conf, CustomStorage) {
-    Ctrl8.CalcProp(this, CustomStorage || this._.Props, name, getfx, setfx, conf);
+Ctrl8.prototype.CalcProp = function (name, getfx, setfx, conf, CustomStorage,enumerable) {
+    Ctrl8.CalcProp(this, CustomStorage || this._.Props, name, getfx, setfx, conf, enumerable);
+}
+
+Ctrl8.prototype.ECalcProp = function (name, getfx, setfx, conf, CustomStorage) {
+    Ctrl8.CalcProp(this, CustomStorage || this._.Props, name, getfx, setfx, conf, 1);
+}
+
+Ctrl8.prototype.CalcOnceProp = function (name, getfx, conf, CustomStorage, enumerable) {
+    Ctrl8.CalcProp(this, CustomStorage || this._.Props, name, function (name, Storage) {
+        return Storage[name] || (Storage[name] = getfx.call(this, name, Storage));
+    }, null, conf, enumerable);
+}
+
+
+Ctrl8.prototype.ECalcOnceProp = function (name, getfx, conf, CustomStorage) {
+    Ctrl8.CalcProp(this, CustomStorage || this._.Props, name, function (name, Storage) {
+        return Storage[name] || (Storage[name] = getfx.call(this, name, Storage));
+    }, null, conf, 1);
 }
 
 Ctrl8.DefCompareFx = function (val1, val2) {
@@ -44,14 +64,15 @@ Ctrl8.DefCompareFx = function (val1, val2) {
 
 Ctrl8.DefChangeFx = function (newval) { }
 
-Ctrl8.CreateProp = function (O, Storage, name, def, readonly, CompareFx, ChangeFx, conf) {
+Ctrl8.CreateProp = function (O, Storage, name, def, readonly, CompareFx, ChangeFx, conf,enumerable) {
     CompareFx ? 1 : CompareFx = Ctrl8.DefCompareFx;
     ChangeFx ? 1 : ChangeFx = Ctrl8.DefChangeFx;
     var Pair = {
         get: function () {
             return Storage[name];
         },
-        configurable: conf ? true : false
+        configurable: conf ? true : false,
+        eenumerable: enumerable ? true : false
     }
     !readonly ? Pair.set = function (val) {
         var yn = CompareFx.call(this,Storage[name], val);
@@ -61,12 +82,13 @@ Ctrl8.CreateProp = function (O, Storage, name, def, readonly, CompareFx, ChangeF
     !Storage.hasOwnProperty(name) && def !== undefined ? Storage[name] = def : 1;
 }
 
-Ctrl8.CalcProp = function (O, Storage, name, gfx, sfx, conf) {
+Ctrl8.CalcProp = function (O, Storage, name, gfx, sfx, conf, enumerable) {
     var Pair = {
         get: function () {
             return gfx.call(this, name, Storage);
         },
-        configurable: conf ? true : false
+        configurable: conf ? true : false,
+        enumerable: enumerable ? true : false
     }
     sfx ? Pair.set = function (nval) {
         sfx.call(this, nval, name, Storage);
