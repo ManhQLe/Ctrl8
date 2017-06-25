@@ -154,6 +154,24 @@ WebCtrl.GetInit = function (DOM) {
     return init;
 }
 
+function WebCtrl8(init) {
+    WebCtrl8.baseConstructor.call(this, init);
+    this.Prop("DOM");
+    var markupinit = WebCtrl8.GetInit(typeof this.DOM == 'string' ? document.querySelector(c) : c);
+    for (var n in markupinit) {
+        //Respect init properties
+        !P.hasOwnProperty(n) ? P[n] = markupinit[n] : 1;
+    }
+}
+WebCtrl8.GetInit = function (DOM) {
+    var init = DOM && DOM.getAttribute("init");
+    init = init && init.length ? eval("(" + init + ")") || {} : {};
+    return init;
+}
+
+EventCtrl.ExtendsTo(WebCtrl8);
+
+
 var _8 = function (s) {
     return new DOMCtrl(s);
 }

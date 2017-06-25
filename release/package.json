@@ -1,6 +1,6 @@
 {
   "name": "ctrl8",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "description": "Ctrl8",
   "main": "nodejs/index.js",
   "author": {
